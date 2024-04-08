@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
+import {useNavigate} from "react-router-dom";
 
 const Login = () => {
   const [user, setUser] = useState({
     email: "",
     password: ""
   });
+
+  //power to navigate
+  const navigate=useNavigate();
 
   //handle input data
   const handleInput = (e) => {
@@ -20,9 +24,33 @@ const Login = () => {
   };
 
   //handling form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     console.log(user);
+    try {
+      const response= await fetch(`http://localhost:3000/api/auth/login`,{
+        method:"POST",
+        headers:{
+          'Content-Type':"application/json" 
+        },
+        body:JSON.stringify(user),
+       });
+
+       console.log("login",response);
+
+       if(response.ok){
+        alert("login sucessful")
+             setUser({email:"",password:""});
+             navigate("/");
+       }
+       else{
+        alert("invalid credential");
+       }
+
+       } catch (error) {
+        console.log("login",error);
+       }
+      
   };
 
   return (
